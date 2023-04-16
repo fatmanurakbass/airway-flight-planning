@@ -1,10 +1,12 @@
 package com.example.airwayflightplanning.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -13,8 +15,7 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getErrorCode(), ex.getTimeStamp());
         HttpStatus status = getStatusForErrorCode(ex.getErrorCode());
 
-        // Log error here
-        System.err.println("Error: " + ex.getMessage());
+        log.error("Error: " + ex.getMessage());
 
         return new ResponseEntity<>(errorResponse, status);
     }
