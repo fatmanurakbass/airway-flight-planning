@@ -14,8 +14,8 @@ import java.util.List;
 public class FlightController {
     private final FlightService flightService;
     @PostMapping
-    public ResponseEntity<FlightDto> createFlight(@RequestBody FlightDto flightDto){
-        return ResponseEntity.ok(flightService.createFlight(flightDto));
+    public void createFlight(@RequestBody FlightDto flightDto){
+        flightService.createFlight(flightDto);
     }
 
     @GetMapping
