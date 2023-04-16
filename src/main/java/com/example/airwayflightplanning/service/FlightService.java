@@ -21,7 +21,7 @@ public class FlightService {
     private final FlightRepository flightRepository;
     private final ModelMapper modelMapper;
 
-    public void createFlight(FlightDto flightDto){
+    public synchronized void createFlight(FlightDto flightDto){
         Flight flight = modelMapper.map(flightDto, Flight.class);
         validateFlightRules(flight);
         modelMapper.map(flightRepository.save(flight), FlightDto.class);
@@ -70,7 +70,7 @@ public class FlightService {
         throw new FlightNotFound(id);
     }
 
-    public FlightDto updateFlight(Long id, FlightDto flightDto){
+    public synchronized FlightDto updateFlight(Long id, FlightDto flightDto){
         Optional <Flight> resultFlight = flightRepository.findById(id);
         if (resultFlight.isPresent()){
             resultFlight.get().setAirlineCode(flightDto.getAirlineCode());
@@ -84,7 +84,7 @@ public class FlightService {
         throw new FlightNotFound(id);
     }
 
-    public Boolean deleteFlight(Long id){
+    public synchronized Boolean deleteFlight(Long id){
         Optional <Flight> resultFlight = flightRepository.findById(id);
         if (resultFlight.isPresent()){
             flightRepository.deleteById(id);
