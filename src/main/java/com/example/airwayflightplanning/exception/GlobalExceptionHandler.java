@@ -10,7 +10,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ErrorResponse> handleApiException(ApiException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getErrorCode());
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getErrorCode(), ex.getTimeStamp());
         HttpStatus status = getStatusForErrorCode(ex.getErrorCode());
 
         // Log error here
@@ -24,6 +24,8 @@ public class GlobalExceptionHandler {
             case "FLIGHT_LIMIT_EXCEEDED":
             case "FLIGHT_NOT_LANDED":
                 return HttpStatus.BAD_REQUEST;
+            case "FLIGHT_NOT_FOUND":
+                return HttpStatus.NOT_FOUND;
             default:
                 return HttpStatus.INTERNAL_SERVER_ERROR;
         }

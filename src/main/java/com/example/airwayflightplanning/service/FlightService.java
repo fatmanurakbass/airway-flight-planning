@@ -2,6 +2,7 @@ package com.example.airwayflightplanning.service;
 
 import com.example.airwayflightplanning.dto.FlightDto;
 import com.example.airwayflightplanning.exception.FlightLimitExceededException;
+import com.example.airwayflightplanning.exception.FlightNotFound;
 import com.example.airwayflightplanning.exception.FlightNotLandedException;
 import com.example.airwayflightplanning.model.Flight;
 import com.example.airwayflightplanning.repository.FlightRepository;
@@ -10,7 +11,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -67,7 +67,7 @@ public class FlightService {
         if(flight.isPresent()){
             return modelMapper.map(flightRepository.findById(id), FlightDto.class);
         }
-        return null;
+        throw new FlightNotFound(id);
     }
 
     public FlightDto updateFlight(Long id, FlightDto flightDto){
@@ -81,7 +81,7 @@ public class FlightService {
             resultFlight.get().setDuration(flightDto.getDuration());
             return modelMapper.map(flightRepository.save(resultFlight.get()), FlightDto.class);
         }
-        return null;
+        throw new FlightNotFound(id);
     }
 
     public Boolean deleteFlight(Long id){
@@ -90,7 +90,7 @@ public class FlightService {
             flightRepository.deleteById(id);
             return true;
         }
-        return false;
+        throw new FlightNotFound(id);
     }
 
 }
