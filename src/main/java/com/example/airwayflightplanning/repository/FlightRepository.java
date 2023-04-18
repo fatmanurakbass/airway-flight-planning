@@ -10,5 +10,4 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
     List<Flight> findByAirlineCodeAndSourceAirportCodeAndDestinationAirportCodeAndDepartureTimeBetween(
             String airlineCode, String sourceAirportCode, String destinationAirportCode, LocalDateTime startDate, LocalDateTime endDate);
 
-    List<Flight> findByAirlineCode(String airlineCode);
 }

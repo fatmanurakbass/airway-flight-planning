@@ -23,25 +23,9 @@ public class FlightController {
 
     @GetMapping
     public ResponseEntity<List<FlightDto>> getFlights(){
+        log.info("getFlights endpoint is called.");
         return ResponseEntity.ok(flightService.getFlights());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<FlightDto> getFlightById(@PathVariable("id")Long id){
-        log.info("getFlightById endpoint is called.");
-        return ResponseEntity.ok(flightService.getFlightById(id));
-    }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<FlightDto> updateFlight(@PathVariable("id")Long id, @RequestBody FlightDto flightDto){
-        log.info("updateFlight endpoint is called.");
-        return ResponseEntity.ok(flightService.updateFlight(id, flightDto));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteFlight(@PathVariable("id")Long id){
-        log.info("deleteFlight endpoint is called.");
-        Boolean status = flightService.deleteFlight(id);
-        return ResponseEntity.ok(status);
-    }
 }
