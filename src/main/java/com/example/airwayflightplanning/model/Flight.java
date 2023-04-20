@@ -1,6 +1,7 @@
 package com.example.airwayflightplanning.model;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 
 import javax.persistence.Entity;
@@ -20,6 +21,5 @@ public class Flight {
     private String sourceAirportCode;
     private String destinationAirportCode;
     private LocalDateTime departureTime;
-    private LocalDateTime arrivalTime;
-    private LocalTime duration;
+    private int duration;
 }
