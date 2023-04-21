@@ -6,10 +6,12 @@ This project is a web application for managing and querying airline flight plann
 
 * Spring Boot: A Java-based framework used for building the foundation of the application.
 * JPA and Hibernate: Java libraries used for database operations and ORM (Object Relational Mapping).
-* ModelMapper: A Java library for providing automatic transformation between objects.
+* Lombok: A Java library that helps to reduce boilerplate code by providing annotations for auto-generating getters, setters, constructors, and more.
+* MapStruct: A Java library for providing efficient and type-safe object mappings.
 * Mockito: A Java library for simulating the behavior of objects in unit tests.
 * JUnit: A Java library for writing and running unit tests.
 * Jackson: A Java library for converting JSON data to Java objects and Java objects to JSON data.
+* H2 Database: An in-memory database used for development and testing purposes.
 
 ## Installation and Running
 
@@ -47,25 +49,3 @@ Content-Type: application/json
 ### Get All Flights
 
 GET /flight
-
-### Get Flight by ID
-
-GET /flights/{id}
-
-### Update Flight
-
-PUT /flight/{id}
-Content-Type: application/json
-
-{
-"airlineCode": "TK",
-"sourceAirportCode": "IST",
-"destinationAirportCode": "JFK",
-"departureTime": "2023-04-20T13:00:00",
-"arrivalTime": "2023-04-20T19:00:00",
-"duration": "05:30:00"
-}
-
-### Delete Flight
-
-DELETE /flights/{id}
