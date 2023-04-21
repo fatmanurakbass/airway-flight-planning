@@ -23,7 +23,6 @@ public class FlightService {
     @Autowired
     private FlightMapper flightMapper;
 
-
     public synchronized void createFlight(FlightDto flightDto){
         Flight flight = flightMapper.dtoToModel(flightDto);
         checkDailyFlightLimit(flight);
@@ -31,19 +30,19 @@ public class FlightService {
         flightRepository.save(flight);
     }
 
-    private synchronized void checkDailyFlightLimit(Flight flight) {
+    synchronized void checkDailyFlightLimit(Flight flight) {
 
         LocalDate departureDate = flight.getDepartureTime().toLocalDate();
         LocalDate arrivalDate = flight.getDepartureTime().plusMinutes(flight.getDuration()).toLocalDate();
 
-        long flightsCount = flightRepository.countFlightsBySourceAndDestinationAndDepartureDateRange(
+        int flightsCount = flightRepository.countFlightsBySourceAndDestinationAndDepartureDateRange(
                 flight.getSourceAirportCode(), flight.getDestinationAirportCode(), departureDate, arrivalDate);
 
         if (flightsCount >= 3) {
             throw new FlightLimitExceededException("Daily maximum flights exceeded for this airline and route.");
         }
     }
-    private synchronized void checkEntryBeforeAirplaneLanding(Flight flight) {
+    synchronized void checkEntryBeforeAirplaneLanding(Flight flight) {
 
         int nonConflictingFlights = flightRepository.countConflictingFlights(flight.getDepartureTime(),
                                                     flight.getDepartureTime().plusMinutes(flight.getDuration()));

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public interface FlightRepository extends JpaRepository<Flight, Long> {
     @Query("SELECT COUNT(f) FROM Flight f WHERE f.sourceAirportCode = ?1 AND f.destinationAirportCode = ?2 AND " +
             "TRUNC(f.departureTime) BETWEEN ?3 AND ?4")
-    long countFlightsBySourceAndDestinationAndDepartureDateRange(String sourceAirportCode, String destinationAirportCode,
+    int countFlightsBySourceAndDestinationAndDepartureDateRange(String sourceAirportCode, String destinationAirportCode,
                                                                  LocalDate startDate, LocalDate endDate);
 
 

@@ -1,59 +1,75 @@
 package com.example.airwayflightplanning.repository;
 
 import com.example.airwayflightplanning.model.Flight;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @DataJpaTest
 public class FlightRepositoryTest {
     @Autowired
     private FlightRepository flightRepository;
 
-    @Before
-    public void setUp() throws Exception {
-    }
     @Test
-    public void shouldFindByAirlineCodeAndSourceAirportCodeAndDestinationAirportCodeAndDepartureTimeBetween() {
+    public void shouldCountFlightsBySourceAndDestinationAndDepartureDateRange() {
         Flight flight1 = new Flight();
-        flight1.setAirlineCode("FN");
-        flight1.setSourceAirportCode("IST");
-        flight1.setDestinationAirportCode("JFK");
-        flight1.setDepartureTime(LocalDateTime.of(2023, 4, 20, 18, 30));
-        flight1.setArrivalTime(LocalDateTime.of(2023, 4, 21, 0, 0));
+        flight1.setSourceAirportCode("JFK");
+        flight1.setDestinationAirportCode("LAX");
+        flight1.setDepartureTime(LocalDateTime.now());
+        flight1.setDuration(120);
 
         Flight flight2 = new Flight();
-        flight2.setAirlineCode("FN");
-        flight2.setSourceAirportCode("IST");
-        flight2.setDestinationAirportCode("JFK");
-        flight2.setDepartureTime(LocalDateTime.of(2023, 4, 21, 10, 30));
-        flight2.setArrivalTime(LocalDateTime.of(2023, 4, 21, 16, 0));
+        flight2.setSourceAirportCode("JFK");
+        flight2.setDestinationAirportCode("LAX");
+        flight2.setDepartureTime(LocalDateTime.now().plusHours(1));
+        flight2.setDuration(120);
+
+        Flight flight3 = new Flight();
+        flight3.setSourceAirportCode("JFK");
+        flight3.setDestinationAirportCode("LAX");
+        flight3.setDepartureTime(LocalDateTime.now().plusHours(2));
+        flight3.setDuration(120);
+
+        flightRepository.save(flight1);
+        flightRepository.save(flight2);
+        flightRepository.save(flight3);
+
+        LocalDate departureDate = LocalDateTime.now().toLocalDate();
+        LocalDate arrivalDate = LocalDateTime.now().plusDays(1).toLocalDate();
+        long flightCount = flightRepository.countFlightsBySourceAndDestinationAndDepartureDateRange("JFK", "LAX", departureDate, arrivalDate);
+
+        assertEquals(3, flightCount);
+    }
+
+    @Test
+    public void shouldCountConflictingFlights() {
+        Flight flight1 = new Flight();
+        flight1.setSourceAirportCode("JFK");
+        flight1.setDestinationAirportCode("LAX");
+        flight1.setDepartureTime(LocalDateTime.now());
+        flight1.setDuration(120);
+
+        Flight flight2 = new Flight();
+        flight2.setSourceAirportCode("JFK");
+        flight2.setDestinationAirportCode("LAX");
+        flight2.setDepartureTime(LocalDateTime.now().plusHours(1));
+        flight2.setDuration(120);
 
         flightRepository.save(flight1);
         flightRepository.save(flight2);
 
-        LocalDateTime startDate = LocalDateTime.of(2023, 4, 20, 0, 0);
-        LocalDateTime endDate = LocalDateTime.of(2023, 4, 21, 23, 59);
+        LocalDateTime testDepartureTime = LocalDateTime.now().plusMinutes(30);
+        LocalDateTime testArrivalTime = testDepartureTime.plusMinutes(120);
+        int conflictingFlightsCount = flightRepository.countConflictingFlights(testDepartureTime, testArrivalTime);
 
-        List<Flight> flights = flightRepository.findByAirlineCodeAndSourceAirportCodeAndDestinationAirportCodeAndDepartureTimeBetween(
-                "FN", "IST", "JFK", startDate, endDate);
-
-        assertThat(flights.size()).isEqualTo(2);
-        assertThat(flights).contains(flight1, flight2);
-    }
-
-    @After
-    public void tearDown() throws Exception {
+        assertEquals(2, conflictingFlightsCount);
     }
 }
