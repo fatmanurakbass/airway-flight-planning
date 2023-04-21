@@ -40,7 +40,7 @@ public class FlightService {
                 flight.getSourceAirportCode(), flight.getDestinationAirportCode(), departureDate, arrivalDate);
 
         if (flightsCount >= 3) {
-            throw new FlightLimitExceededException();
+            throw new FlightLimitExceededException("Daily maximum flights exceeded for this airline and route.");
         }
     }
     private synchronized void checkEntryBeforeAirplaneLanding(Flight flight) {
@@ -49,7 +49,7 @@ public class FlightService {
                                                     flight.getDepartureTime().plusMinutes(flight.getDuration()));
 
         if (nonConflictingFlights != 0) {
-            throw new FlightNotLandedException();
+            throw new FlightNotLandedException("The airplane has not landed yet. Cannot add a new flight entry.");
         }
     }
 

@@ -9,26 +9,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
-    @ExceptionHandler(ApiException.class)
-    public ResponseEntity<ErrorResponse> handleApiException(ApiException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getErrorCode(), ex.getTimeStamp());
-        HttpStatus status = getStatusForErrorCode(ex.getErrorCode());
-
-        log.error("Error: " + ex.getMessage());
-
-        return new ResponseEntity<>(errorResponse, status);
+    @ExceptionHandler(FlightLimitExceededException.class)
+    public ResponseEntity<String> handleMaxFlightsExceededError(FlightLimitExceededException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    private HttpStatus getStatusForErrorCode(String errorCode) {
-        switch (errorCode) {
-            case "FLIGHT_LIMIT_EXCEEDED":
-            case "FLIGHT_NOT_LANDED":
-                return HttpStatus.BAD_REQUEST;
-            case "FLIGHT_NOT_FOUND":
-                return HttpStatus.NOT_FOUND;
-            default:
-                return HttpStatus.INTERNAL_SERVER_ERROR;
-        }
+    @ExceptionHandler(FlightNotLandedException.class)
+    public ResponseEntity<String> handleAirplaneNotLandedError(FlightNotLandedException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
