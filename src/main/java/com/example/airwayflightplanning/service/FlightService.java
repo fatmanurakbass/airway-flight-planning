@@ -52,7 +52,7 @@ public class FlightService {
         }
     }
 
-    public List<FlightDto> getFlights(){
+    public synchronized List<FlightDto> getFlights(){
         return (flightMapper.modelsToDtos(flightRepository.findAll()));
     }
 
