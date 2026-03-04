@@ -23,7 +23,7 @@ public class FlightService {
     @Autowired
     private FlightMapper flightMapper;
 
-    public synchronized void createFlight(FlightDto flightDto){
+    public synchronized void createFlight(FlightDto flightDto) {
         Flight flight = flightMapper.dtoToModel(flightDto);
         checkDailyFlightLimit(flight);
         checkEntryBeforeAirplaneLanding(flight);
